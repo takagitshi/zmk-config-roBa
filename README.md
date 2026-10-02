@@ -8,7 +8,8 @@ keymap and upper-level pointing features.
 - Right-central PMW3610 SPI wiring, orientation, smart algorithm and 125 Hz
   software polling remain on the original roBa driver lineage.
 - The encoder stays at roBa's hardware-specific 12 steps. Its push switch is
-  retained as the extra 43rd input at position 15.
+  retained as the extra 43rd input at position 15; its current key binding is
+  `&none` after the latest Keymap Editor edit.
 - The original sensor power behavior remains in use; `force-awake` is not
   enabled.
 - Standard ZMK Studio, split battery reporting and Bluetooth roles are kept.
@@ -26,8 +27,9 @@ keymap and upper-level pointing features.
 - Scroll uses roBa's established axis directions with smooth, remainder-aware
   1/40 scaling. This compensates for roBa's 800 CPI so physical scroll speed
   stays close to moNa2's 1200 CPI at 1/60.
-- The left encoder matches moNa2's layer roles while retaining roBa's physical
-  step count.
+- The left encoder retains the moNa2-style layer roles and roBa's physical
+  step count. Rotation directions are editable in Keymap Editor; the latest
+  saved map reverses volume on Base/Mouse and vertical scroll on number/User 9.
 - The onboard RGB LED in each XIAO nRF52840 is enabled. Central-side layer
   colors match moNa2: off, white, green, yellow, magenta, blue, green, cyan,
   red and yellow for Layers 0 through 9.
@@ -38,9 +40,11 @@ visibility must be checked on the finished keyboard.
 ## Keymap Editor contract
 
 `config/roBa.keymap` is the editable canonical keymap. Automated checks protect
-the ten-layer structure, 43 input slots, safe momentary layer access, dynamic
-AML exclusions and editable Gesture slots without pinning Editor-owned tap
-actions or mouse-button values.
+the ten-layer structure, 43 input slots, safe momentary layer access and AML
+exclusions. Layer display names, encoder directions, Gesture actions, tap
+actions and mouse-button values remain editable. Mouse-layer key positions
+also control AML's `excluded-positions`; CI checks that they stay in sync so
+AML does not turn off before a Mouse-layer action runs.
 
 ## Firmware artifacts
 

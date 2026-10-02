@@ -50,6 +50,28 @@ def main() -> None:
         verifier.ROOT = test_root
         verifier.main()
 
+        # Keymap Editor owns encoder directions and gesture action bindings.
+        edited, volume_count = re.subn(
+            r"sensor-bindings\s*=\s*<&inc_dec_kp\s+[^>]+>;",
+            "sensor-bindings = <&inc_dec_kp C_VOLUME_DOWN C_VOLUME_UP>;",
+            keymap,
+        )
+        edited, scroll_count = re.subn(
+            r"sensor-bindings\s*=\s*<&scroll_(?:up_down|down_up)>;",
+            "sensor-bindings = <&scroll_down_up>;",
+            edited,
+        )
+        if volume_count != 2 or scroll_count != 2:
+            raise AssertionError("Editor encoder fixture no longer covers both edited layers")
+        if 'display-name = "Base";' not in edited or '&kp LG(T)' not in edited:
+            raise AssertionError("Editor display/Gesture fixture no longer matches the keymap")
+        edited = edited.replace('display-name = "Base";', 'display-name = "Custom Base";')
+        edited = edited.replace('&kp LG(T)', '&none', 1)
+        keymap_path.write_text(edited, encoding="utf-8")
+        verifier.main()
+
+        keymap_path.write_text(keymap, encoding="utf-8")
+
         keymap = remove_safe_access(keymap, 5)
         keymap_path.write_text(keymap, encoding="utf-8")
         try:
