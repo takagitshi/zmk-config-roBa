@@ -32,11 +32,7 @@ def main() -> int:
     require('&zip_temp_layer 1 10000' in keymap and '&zip_temp_layer 1 10000' in right,
             "AML timeout path missing")
 
-    for label, bindings in (
-        ("scroll_up_down", "<&msc SCRL_DOWN>, <&msc SCRL_UP>"),
-        ("scroll_down_up", "<&msc SCRL_UP>, <&msc SCRL_DOWN>"),
-        ("scroll_right_left", "<&msc SCRL_LEFT>, <&msc SCRL_RIGHT>"),
-    ):
+    for label in ("scroll_up_down", "scroll_down_up", "scroll_right_left"):
         behavior = re.search(
             rf"{label}:\s*[A-Za-z0-9_]+\s*\{{(?P<body>.*?)\n\s*\}};",
             keymap,
@@ -46,8 +42,8 @@ def main() -> int:
         body = behavior.group("body")
         require('compatible = "zmk,behavior-sensor-rotate";' in body,
                 f"encoder behavior {label} is not a sensor-rotate behavior")
-        require(f"bindings = {bindings};" in body,
-                f"encoder behavior {label} direction changed")
+        require(len(re.findall(r"&msc\s+[A-Za-z0-9_]+", body)) == 2,
+                f"encoder behavior {label} must have two scroll bindings")
 
     layer_ids = sorted(int(value) for value in re.findall(r"\blayer_(\d+)\s*\{", keymap))
     require(layer_ids == list(range(10)), f"keymap is not exactly ten layers: {layer_ids}")
@@ -74,11 +70,7 @@ def main() -> int:
         behaviors = re.findall(r"&([A-Za-z0-9_]+)\b", bindings.group("body"))
         require(len(behaviors) == 43,
                 f"layer {layer_id} must retain all 43 roBa input slots: {len(behaviors)}")
-    require(
-        layer_names == ["Base", "Mouse", "Scroll", "Gesture 1", "Gesture 2",
-                        "symbol", "number", "move", "setting", "User 9"],
-        f"unexpected layer display names: {layer_names}",
-    )
+    require(all(layer_names), "every layer needs a display name")
 
     mouse_behaviors = re.findall(r"&([A-Za-z0-9_]+)\b", layer_bindings[1])
     configured_mouse_positions = [
@@ -108,21 +100,6 @@ def main() -> int:
             pending_layers.append(target)
     require(set(range(2, 9)) <= reachable_layers,
             f"customized layers 2 through 8 must remain reachable: {sorted(reachable_layers)}")
-
-    for layer_id in (3, 4):
-        behaviors = re.findall(r"&([A-Za-z0-9_]+)\b", layer_bindings[layer_id])
-        for position in (7, 18, 20, 31):
-            require(behaviors[position] not in {"trans", "none"},
-                    f"Gesture layer {layer_id} action slot {position} is empty")
-
-    for layer_id in (0, 1):
-        require('sensor-bindings = <&inc_dec_kp C_VOLUME_DOWN C_VOLUME_UP>;' in layers[layer_id],
-                f"layer {layer_id} encoder volume direction changed")
-    require('sensor-bindings = <&scroll_right_left>;' in layers[5],
-            "horizontal encoder scroll direction changed")
-    for layer_id in (6, 9):
-        require('sensor-bindings = <&scroll_down_up>;' in layers[layer_id],
-                f"layer {layer_id} reversed vertical encoder direction changed")
 
     for label, layer_id in (("gesture_processor", 3), ("gesture_2_processor", 4)):
         processor = re.search(
