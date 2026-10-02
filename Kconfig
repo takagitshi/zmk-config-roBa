@@ -1,0 +1,6 @@
+config ZMK_INPUT_PROCESSOR_GESTURE
+    bool "Gesture input processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_GESTURE_ENABLED
+    help
+      Enable the layer-aware pointing gesture input processor.

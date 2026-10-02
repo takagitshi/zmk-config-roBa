@@ -18,10 +18,13 @@
 #
 ---
 include:
- - board: seeeduino_xiao_ble
-   shield: roBa_R
-   snippet: studio-rpc-usb-uart
- - board: seeeduino_xiao_ble
-   shield: roBa_L
- - board: seeeduino_xiao_ble
-   shield: settings_reset
+  - board: seeeduino_xiao_ble
+    shield: roBa_L rgbled_adapter
+    artifact-name: roba-left-peripheral
+  - board: seeeduino_xiao_ble
+    shield: roBa_R rgbled_adapter
+    snippet: studio-rpc-usb-uart
+    artifact-name: roba-right-central
+  - board: seeeduino_xiao_ble
+    shield: settings_reset
+    artifact-name: roba-pairing-reset-use-only-when-needed
