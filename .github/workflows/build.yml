@@ -1,5 +1,57 @@
-on: [push, pull_request, workflow_dispatch]
+name: Build firmware
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
+  source-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test
+      - run: python3 scripts/verify-roba-config.py
+
+  generated-contracts:
+    needs: source-tests
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare isolated west workspace
+        run: |
+          mkdir -p /tmp/roba-contracts/config
+          cp -R config/. /tmp/roba-contracts/config/
+          cd /tmp/roba-contracts
+          west init -l config
+          west update --fetch-opt=--filter=tree:0
+          west zephyr-export
+      - name: Build right central
+        working-directory: /tmp/roba-contracts
+        run: >-
+          west build -s zmk/app -d build-right -b seeeduino_xiao_ble
+          -S studio-rpc-usb-uart --
+          -DSHIELD="roBa_R rgbled_adapter"
+          -DZMK_CONFIG=/tmp/roba-contracts/config
+          -DZMK_EXTRA_MODULES=${GITHUB_WORKSPACE}
+      - name: Build left peripheral
+        working-directory: /tmp/roba-contracts
+        run: >-
+          west build -s zmk/app -d build-left -b seeeduino_xiao_ble --
+          -DSHIELD="roBa_L rgbled_adapter"
+          -DZMK_CONFIG=/tmp/roba-contracts/config
+          -DZMK_EXTRA_MODULES=${GITHUB_WORKSPACE}
+      - name: Verify generated devicetree and Kconfig
+        run: >-
+          python3 scripts/verify-built-firmware.py
+          /tmp/roba-contracts/build-right/zephyr/zephyr.dts
+          /tmp/roba-contracts/build-right/zephyr/.config
+          /tmp/roba-contracts/build-left/zephyr/zephyr.dts
+          /tmp/roba-contracts/build-left/zephyr/.config
+
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3-branch
+    needs: generated-contracts
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0

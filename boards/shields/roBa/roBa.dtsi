@@ -1,4 +1,5 @@
 #include <dt-bindings/zmk/matrix_transform.h>
+#include <input/processors.dtsi>
 #include <physical_layouts.dtsi>
 
 / {
@@ -86,6 +87,7 @@
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
         diode-direction = "col2row";
+        wakeup-source;
             row-gpios
                 = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
                 , <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
@@ -115,6 +117,36 @@
     trackball_listener: trackball_listener {
         compatible = "zmk,input-listener";
         status = "disabled";
+    };
+
+    gesture_processor: gesture_processor {
+        compatible = "zmk,input-processor-gesture";
+        #input-processor-cells = <0>;
+        status = "disabled";
+        layer = <3>;
+        binding-layer = <3>;
+        up-position = <7>;
+        left-position = <18>;
+        right-position = <20>;
+        down-position = <31>;
+        threshold = <180>;
+        cooldown-ms = <150>;
+        reset-on-layer = <2>;
+    };
+
+    gesture_2_processor: gesture_2_processor {
+        compatible = "zmk,input-processor-gesture";
+        #input-processor-cells = <0>;
+        status = "disabled";
+        layer = <4>;
+        binding-layer = <4>;
+        up-position = <7>;
+        left-position = <18>;
+        right-position = <20>;
+        down-position = <31>;
+        threshold = <180>;
+        cooldown-ms = <150>;
+        reset-on-layer = <2>;
     };
 };
 

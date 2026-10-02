@@ -2,15 +2,18 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: kumamuk-git
-      url-base: https://github.com/kumamuk-git
+    - name: caksoylar
+      url-base: https://github.com/caksoylar
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: v0.3-branch
+      revision: acfd8e5ea76cf23ad1c9b6b99848f97a95224257
       import: app/west.yml
     - name: zmk-pmw3610-driver
-      remote: kumamuk-git
-      revision: main
+      url: https://github.com/takagitshi/roba-pmw3610-driver
+      revision: 00b389b9093f89f7cec3e025126383877008acd1
+    - name: zmk-rgbled-widget
+      remote: caksoylar
+      revision: 8756cb7b8114069fa3c25c6f6c990f24988fceff
   self:
     path: config
