@@ -152,10 +152,10 @@ def main() -> int:
             "shared matrix wake source is missing")
 
     for fragment in (
-        "pointer-acceleration;", "pointer-acceleration-base-gain-milli = <750>;",
+        "pointer-acceleration;", "pointer-acceleration-base-gain-milli = <625>;",
         "pointer-acceleration-takeoff-speed = <8>;",
         "pointer-acceleration-full-speed = <116>;",
-        "pointer-acceleration-max-gain-milli = <1500>;",
+        "pointer-acceleration-max-gain-milli = <2000>;",
         "pointer-acceleration-reference-interval-ms = <8>;",
         "pointer-acceleration-idle-reset-ms = <60>;",
         "pointer-acceleration-scroll-layer = <2>;",
@@ -164,7 +164,7 @@ def main() -> int:
     ):
         require(fragment in right, f"pointer acceleration contract missing: {fragment}")
     require("pointer-acceleration-precision" not in right,
-            "600 CPI must be the base curve, not a separate precision stage")
+            "500 CPI must be the base curve, not a separate precision stage")
 
     normalized_listener = re.sub(r"\s+", "", right)
     require(

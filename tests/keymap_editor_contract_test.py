@@ -53,7 +53,7 @@ def main() -> None:
         # Keymap Editor owns encoder directions and gesture action bindings.
         edited, volume_count = re.subn(
             r"sensor-bindings\s*=\s*<&inc_dec_kp\s+[^>]+>;",
-            "sensor-bindings = <&inc_dec_kp C_VOLUME_DOWN C_VOLUME_UP>;",
+            "sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;",
             keymap,
         )
         edited, scroll_count = re.subn(

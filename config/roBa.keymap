@@ -118,7 +118,7 @@
 &kp ESCAPE        &kp LEFT_ALT  &kp LEFT_COMMAND  &kp LCTRL  &lt 5 LANGUAGE_2  &lt 6 SPACE      &lt 7 ENTER    &mt RIGHT_COMMAND LANGUAGE_1                               &kp SEMICOLON
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_DOWN C_VOLUME_UP>;
         };
 
         layer_1 {
@@ -130,7 +130,7 @@
 &trans          &kp LEFT_ALT  &kp LEFT_COMMAND  &trans  &trans  &trans      &trans  &trans                                       &trans
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_DOWN C_VOLUME_UP>;
         };
 
         layer_2 {
