@@ -81,14 +81,14 @@
          * Use a 500-CPI-equivalent low-speed baseline: 800 CPI at 0.625x.
          * Thresholds account for roBa's 34 mm ball, 800 CPI, and 8 ms report
          * cadence. Acceleration begins at the established low-speed threshold
-         * and eases toward a 2.0x upper bound without replacing this driver's
-         * orientation, polling, or power path.
+         * and eases more quickly through mid-speed toward a 3.0x upper bound
+         * without replacing this driver's orientation, polling, or power path.
          */
         pointer-acceleration;
         pointer-acceleration-base-gain-milli = <625>;
         pointer-acceleration-takeoff-speed = <8>;
-        pointer-acceleration-full-speed = <116>;
-        pointer-acceleration-max-gain-milli = <2000>;
+        pointer-acceleration-full-speed = <80>;
+        pointer-acceleration-max-gain-milli = <3000>;
         pointer-acceleration-reference-interval-ms = <8>;
         pointer-acceleration-idle-reset-ms = <60>;
         pointer-acceleration-scroll-layer = <2>;

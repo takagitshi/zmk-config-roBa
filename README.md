@@ -23,8 +23,8 @@ keymap and upper-level pointing features.
 - Gesture actions are ordinary bindings on Layers 3 and 4, so GitHub Keymap
   Editor can change them without editing the gesture implementation.
 - The PMW3610 uses a 500-CPI-equivalent low-speed baseline and accelerates from
-  there toward a 2.0x high-speed upper bound. Scroll and Gesture layers bypass
-  it.
+  there through a faster mid-speed ramp toward a 3.0x high-speed upper
+  bound. Scroll and Gesture layers bypass it.
 - Scroll uses roBa's established axis directions with smooth, remainder-aware
   1/40 scaling. This compensates for roBa's 800 CPI so physical scroll speed
   stays close to moNa2's 1200 CPI at 1/60.
