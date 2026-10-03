@@ -22,15 +22,15 @@ keymap and upper-level pointing features.
   and mouse-button activity refresh.
 - Gesture actions are ordinary bindings on Layers 3 and 4, so GitHub Keymap
   Editor can change them without editing the gesture implementation.
-- The PMW3610 uses a 600-CPI-equivalent low-speed baseline and accelerates from
-  there toward the unchanged 1.5x high-speed limit. Scroll and Gesture layers
-  bypass it.
+- The PMW3610 uses a 500-CPI-equivalent low-speed baseline and accelerates from
+  there toward a 2.0x high-speed upper bound. Scroll and Gesture layers bypass
+  it.
 - Scroll uses roBa's established axis directions with smooth, remainder-aware
   1/40 scaling. This compensates for roBa's 800 CPI so physical scroll speed
   stays close to moNa2's 1200 CPI at 1/60.
 - The left encoder retains the moNa2-style layer roles and roBa's physical
   step count. Base and Mouse use LisM's two-input, 300 ms volume divider, with
-  clockwise/up set to Volume Up and counter-clockwise/down to Volume Down.
+  clockwise/up set to Volume Down and counter-clockwise/down to Volume Up.
   Rotation parameters remain editable in Keymap Editor; Scroll layers are not
   divided.
 - The XIAO onboard RGB widget and adapter are not enabled, restoring the
