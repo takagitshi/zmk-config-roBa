@@ -154,8 +154,8 @@ def main() -> int:
     for fragment in (
         "pointer-acceleration;", "pointer-acceleration-base-gain-milli = <625>;",
         "pointer-acceleration-takeoff-speed = <8>;",
-        "pointer-acceleration-full-speed = <116>;",
-        "pointer-acceleration-max-gain-milli = <2000>;",
+        "pointer-acceleration-full-speed = <80>;",
+        "pointer-acceleration-max-gain-milli = <3000>;",
         "pointer-acceleration-reference-interval-ms = <8>;",
         "pointer-acceleration-idle-reset-ms = <60>;",
         "pointer-acceleration-scroll-layer = <2>;",
