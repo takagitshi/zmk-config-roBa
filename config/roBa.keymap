@@ -21,6 +21,12 @@
     flavor = "balanced";
 };
 
+/* Keep Keymap Editor's standard two-parameter encoder UI while filtering
+ * both directions through the shared two-input volume divider. */
+&inc_dec_kp {
+    bindings = <&encoder_key_divider_cw>, <&encoder_key_divider_ccw>;
+};
+
 &zip_temp_layer {
     require-prior-idle-ms = <300>;
     excluded-positions = <18 19 20 21 22 35 36>;
@@ -53,6 +59,26 @@
             bindings = <&mo>, <&mkp>;
 
             display-name = "Mouse Layer-Tap";
+        };
+
+        encoder_key_divider_cw: encoder_key_divider_cw {
+            compatible = "zmk,behavior-encoder-key-divider";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            divisor = <2>;
+            timeout-ms = <300>;
+            direction = <1>;
+            display-name = "Encoder Two-Step Clockwise";
+        };
+
+        encoder_key_divider_ccw: encoder_key_divider_ccw {
+            compatible = "zmk,behavior-encoder-key-divider";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            divisor = <2>;
+            timeout-ms = <300>;
+            direction = <2>;
+            display-name = "Encoder Two-Step Counter-Clockwise";
         };
 
         scroll_up_down: mouse_wheel_up_down {

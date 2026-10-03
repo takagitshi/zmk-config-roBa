@@ -45,12 +45,8 @@ def main() -> int:
         'compatible = "pixart,pmw3610";',
         "reg = < 0x0 >;", "spi-max-frequency = < 0x1e8480 >;",
         "pointer-acceleration;",
-        "pointer-acceleration-base-gain-milli = < 0x3e8 >;",
-        "pointer-acceleration-precision-mode;",
-        "pointer-acceleration-precision-gain-milli = < 0x1f4 >;",
-        "pointer-acceleration-precision-speed = < 0x8 >;",
-        "pointer-acceleration-precision-full-speed = < 0x16 >;",
-        "pointer-acceleration-takeoff-speed = < 0x16 >;",
+        "pointer-acceleration-base-gain-milli = < 0x2ee >;",
+        "pointer-acceleration-takeoff-speed = < 0x8 >;",
         "pointer-acceleration-full-speed = < 0x74 >;",
         "pointer-acceleration-max-gain-milli = < 0x5dc >;",
         "pointer-acceleration-reference-interval-ms = < 0x8 >;",
@@ -60,6 +56,17 @@ def main() -> int:
         "pointer-acceleration-gesture-layer-2 = < 0x4 >;",
     ):
         require(prop in sensor, f"generated pointer contract missing: {prop}")
+    require("pointer-acceleration-precision" not in sensor,
+            "generated curve unexpectedly retains a precision stage")
+
+    for label, direction in (("encoder_key_divider_cw", "0x1"),
+                             ("encoder_key_divider_ccw", "0x2")):
+        divider = re.sub(r"\s+", "", node_body(right_dts, label))
+        for prop in (
+            'compatible="zmk,behavior-encoder-key-divider";',
+            "divisor=<0x2>;", "timeout-ms=<0x12c>;", f"direction=<{direction}>;",
+        ):
+            require(prop in divider, f"generated {label} contract missing: {prop}")
 
     require(
         "input-processors=<&gesture_2_processor>,<&gesture_processor>,"
@@ -92,8 +99,8 @@ def main() -> int:
     for symbol in (
         "CONFIG_ZMK_BLE", "CONFIG_ZMK_SPLIT", "CONFIG_ZMK_SPLIT_ROLE_CENTRAL",
         "CONFIG_ZMK_STUDIO", "CONFIG_ZMK_STUDIO_TRANSPORT_BLE",
+        "CONFIG_ZMK_BEHAVIOR_ENCODER_KEY_DIVIDER",
         "CONFIG_PMW3610_POINTER_ACCELERATION", "CONFIG_ZMK_POINTING_SMOOTH_SCROLLING",
-        "CONFIG_RGBLED_WIDGET",
     ):
         require(enabled(right_config, symbol), f"right-central build missing {symbol}")
     for value in (
@@ -109,13 +116,15 @@ def main() -> int:
     require(not enabled(right_config, "CONFIG_ZMK_SETTINGS_RESET_ON_START"),
             "right-central normal firmware would erase settings on boot")
 
-    expected_layer_colors = [0, 7, 2, 3, 5, 4, 2, 6, 1, 3]
-    for layer_id, color in enumerate(expected_layer_colors):
-        require(f"CONFIG_RGBLED_WIDGET_LAYER_{layer_id}_COLOR={color}" in right_config,
-                f"generated layer {layer_id} LED color is not palette value {color}")
+    require(not enabled(right_config, "CONFIG_RGBLED_WIDGET"),
+            "right-central unexpectedly enables the RGB LED widget")
 
-    for symbol in ("CONFIG_ZMK_BLE", "CONFIG_ZMK_SPLIT", "CONFIG_RGBLED_WIDGET"):
+    for symbol in ("CONFIG_ZMK_BLE", "CONFIG_ZMK_SPLIT"):
         require(enabled(left_config, symbol), f"left-peripheral build missing {symbol}")
+    require(not enabled(left_config, "CONFIG_RGBLED_WIDGET"),
+            "left-peripheral unexpectedly enables the RGB LED widget")
+    require(not enabled(left_config, "CONFIG_ZMK_BEHAVIOR_ENCODER_KEY_DIVIDER"),
+            "encoder divider must keep its state on the central side only")
     require(not enabled(left_config, "CONFIG_ZMK_SPLIT_ROLE_CENTRAL"),
             "left build unexpectedly became the split central")
     require(not enabled(left_config, "CONFIG_ZMK_SETTINGS_RESET_ON_START"),

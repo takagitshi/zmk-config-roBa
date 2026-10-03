@@ -78,18 +78,15 @@
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         /*
-         * Keep roBa's original 400-CPI low-speed feel: 800 CPI at 0.5x.
+         * Use a 600-CPI-equivalent low-speed baseline: 800 CPI at 0.75x.
          * Thresholds account for roBa's 34 mm ball, 800 CPI, and 8 ms report
-         * cadence so the transition timing stays close to moNa2 without
+         * cadence. Acceleration begins where the former precision transition
+         * began, while preserving the existing high-speed limit and without
          * replacing this driver's orientation, polling, or power path.
          */
         pointer-acceleration;
-        pointer-acceleration-base-gain-milli = <1000>;
-        pointer-acceleration-precision-mode;
-        pointer-acceleration-precision-gain-milli = <500>;
-        pointer-acceleration-precision-speed = <8>;
-        pointer-acceleration-precision-full-speed = <22>;
-        pointer-acceleration-takeoff-speed = <22>;
+        pointer-acceleration-base-gain-milli = <750>;
+        pointer-acceleration-takeoff-speed = <8>;
         pointer-acceleration-full-speed = <116>;
         pointer-acceleration-max-gain-milli = <1500>;
         pointer-acceleration-reference-interval-ms = <8>;

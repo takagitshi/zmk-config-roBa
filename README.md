@@ -22,20 +22,19 @@ keymap and upper-level pointing features.
   and mouse-button activity refresh.
 - Gesture actions are ordinary bindings on Layers 3 and 4, so GitHub Keymap
   Editor can change them without editing the gesture implementation.
-- The PMW3610 keeps an effective low-speed sensitivity of 400 CPI while using
-  a roBa-adapted acceleration curve. Scroll and Gesture layers bypass it.
+- The PMW3610 uses a 600-CPI-equivalent low-speed baseline and accelerates from
+  there toward the unchanged 1.5x high-speed limit. Scroll and Gesture layers
+  bypass it.
 - Scroll uses roBa's established axis directions with smooth, remainder-aware
   1/40 scaling. This compensates for roBa's 800 CPI so physical scroll speed
   stays close to moNa2's 1200 CPI at 1/60.
 - The left encoder retains the moNa2-style layer roles and roBa's physical
-  step count. Rotation directions are editable in Keymap Editor; the latest
-  saved map reverses volume on Base/Mouse and vertical scroll on number/User 9.
-- The onboard RGB LED in each XIAO nRF52840 is enabled. Central-side layer
-  colors match moNa2: off, white, green, yellow, magenta, blue, green, cyan,
-  red and yellow for Layers 0 through 9.
-
-The XIAO LED can be partially obscured by the assembled roBa case, so actual
-visibility must be checked on the finished keyboard.
+  step count. Base and Mouse use LisM's two-input, 300 ms volume divider, with
+  clockwise/up set to Volume Up and counter-clockwise/down to Volume Down.
+  Rotation parameters remain editable in Keymap Editor; Scroll layers are not
+  divided.
+- The XIAO onboard RGB widget and adapter are not enabled, restoring the
+  original roBa LED configuration because the assembled case hides the LED.
 
 ## Keymap Editor contract
 

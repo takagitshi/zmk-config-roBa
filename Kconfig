@@ -1,3 +1,12 @@
+config ZMK_BEHAVIOR_ENCODER_KEY_DIVIDER
+    bool "Encoder key divider behavior"
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_ENCODER_KEY_DIVIDER_ENABLED
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Forward every Nth consecutive encoder key event while resetting the
+      partial count when the encoder direction changes.
+
 config ZMK_INPUT_PROCESSOR_GESTURE
     bool "Gesture input processor"
     default y
