@@ -1,0 +1,29 @@
+# Copyright (c) 2026 Takashi Imai
+# SPDX-License-Identifier: MIT
+
+description: Encoder key divider behavior
+
+compatible: "zmk,behavior-encoder-key-divider"
+
+include: one_param.yaml
+
+properties:
+  bindings:
+    type: phandles
+    required: true
+    description: Key behavior to forward after the configured number of encoder inputs
+
+  divisor:
+    type: int
+    required: true
+    description: Number of consecutive same-direction inputs required for one forwarded key event
+
+  timeout-ms:
+    type: int
+    required: true
+    description: Maximum time between consecutive same-direction inputs
+
+  direction:
+    type: int
+    required: true
+    description: Direction identifier used with shared state; paired directions must use distinct values

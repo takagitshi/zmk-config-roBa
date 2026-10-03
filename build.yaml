@@ -19,10 +19,10 @@
 ---
 include:
   - board: seeeduino_xiao_ble
-    shield: roBa_L rgbled_adapter
+    shield: roBa_L
     artifact-name: roba-left-peripheral
   - board: seeeduino_xiao_ble
-    shield: roBa_R rgbled_adapter
+    shield: roBa_R
     snippet: studio-rpc-usb-uart
     artifact-name: roba-right-central
   - board: seeeduino_xiao_ble

@@ -29,6 +29,29 @@ def main() -> int:
     require('display-name = "Mouse Layer-Tap";' in keymap,
             "Mouse Layer-Tap display name is missing")
     require('bindings = <&mo>, <&mkp>;' in keymap, "Mouse Layer-Tap contract missing")
+
+    divider_override = re.search(
+        r"&inc_dec_kp\s*\{(?P<body>.*?)\n\s*\};", keymap, re.DOTALL
+    )
+    require(divider_override is not None, "inc_dec_kp divider override is missing")
+    require(
+        "bindings = <&encoder_key_divider_cw>, <&encoder_key_divider_ccw>;"
+        in divider_override.group("body"),
+        "inc_dec_kp no longer routes both directions through the divider",
+    )
+    for label, direction in (("encoder_key_divider_cw", 1),
+                             ("encoder_key_divider_ccw", 2)):
+        divider = re.search(
+            rf"{label}:\s*{label}\s*\{{(?P<body>.*?)\n\s*\}};", keymap, re.DOTALL
+        )
+        require(divider is not None, f"{label} behavior is missing")
+        for fragment in (
+            'compatible = "zmk,behavior-encoder-key-divider";',
+            "#binding-cells = <1>;", "bindings = <&kp>;",
+            "divisor = <2>;", "timeout-ms = <300>;", f"direction = <{direction}>;",
+        ):
+            require(fragment in divider.group("body"),
+                    f"{label} contract missing: {fragment}")
     require('&zip_temp_layer 1 10000' in keymap and '&zip_temp_layer 1 10000' in right,
             "AML timeout path missing")
 
@@ -71,6 +94,15 @@ def main() -> int:
         require(len(behaviors) == 43,
                 f"layer {layer_id} must retain all 43 roBa input slots: {len(behaviors)}")
     require(all(layer_names), "every layer needs a display name")
+
+    for layer_id in (0, 1):
+        sensor_binding = re.search(
+            r"sensor-bindings\s*=\s*<(?P<body>.*?)>;", layers[layer_id], re.DOTALL
+        )
+        require(sensor_binding is not None, f"layer {layer_id} volume encoder is missing")
+        volume_binding = re.sub(r"\s+", " ", sensor_binding.group("body").strip())
+        require(volume_binding.startswith("&inc_dec_kp ") and len(volume_binding.split()) == 3,
+                f"layer {layer_id} lost the editable divided-volume binding: {volume_binding}")
 
     mouse_behaviors = re.findall(r"&([A-Za-z0-9_]+)\b", layer_bindings[1])
     configured_mouse_positions = [
@@ -120,12 +152,8 @@ def main() -> int:
             "shared matrix wake source is missing")
 
     for fragment in (
-        "pointer-acceleration;", "pointer-acceleration-base-gain-milli = <1000>;",
-        "pointer-acceleration-precision-mode;",
-        "pointer-acceleration-precision-gain-milli = <500>;",
-        "pointer-acceleration-precision-speed = <8>;",
-        "pointer-acceleration-precision-full-speed = <22>;",
-        "pointer-acceleration-takeoff-speed = <22>;",
+        "pointer-acceleration;", "pointer-acceleration-base-gain-milli = <750>;",
+        "pointer-acceleration-takeoff-speed = <8>;",
         "pointer-acceleration-full-speed = <116>;",
         "pointer-acceleration-max-gain-milli = <1500>;",
         "pointer-acceleration-reference-interval-ms = <8>;",
@@ -135,6 +163,8 @@ def main() -> int:
         "pointer-acceleration-gesture-layer-2 = <4>;",
     ):
         require(fragment in right, f"pointer acceleration contract missing: {fragment}")
+    require("pointer-acceleration-precision" not in right,
+            "600 CPI must be the base curve, not a separate precision stage")
 
     normalized_listener = re.sub(r"\s+", "", right)
     require(
@@ -164,23 +194,21 @@ def main() -> int:
     require("CONFIG_PMW3610_FORCE_AWAKE=y" not in right_conf,
             "roBa power behavior unexpectedly enables force-awake")
 
-    expected_layer_colors = [0, 7, 2, 3, 5, 4, 2, 6, 1, 3]
-    for layer_id, color in enumerate(expected_layer_colors):
-        require(f"CONFIG_RGBLED_WIDGET_LAYER_{layer_id}_COLOR={color}" in right_conf,
-                f"layer {layer_id} LED color is not palette value {color}")
-    require("roBa_L rgbled_adapter" in builds and "roBa_R rgbled_adapter" in builds,
-            "XIAO onboard RGB adapter is missing from a normal build")
+    require("CONFIG_RGBLED_WIDGET" not in right_conf,
+            "original roBa LED behavior must not enable the RGB widget")
+    require("rgbled_adapter" not in builds,
+            "original roBa normal builds must not enable the RGB adapter")
     require("roba-pairing-reset-use-only-when-needed" in builds,
             "pairing-reset artifact is not clearly marked as recovery-only")
 
     revisions = re.findall(r"revision:\s*([0-9a-f]{40})", west)
-    require(len(revisions) >= 3, "ZMK, PMW3610, and RGB dependencies must be pinned")
+    require(len(revisions) >= 2, "ZMK and PMW3610 dependencies must be pinned")
     require("revision: acfd8e5ea76cf23ad1c9b6b99848f97a95224257" in west,
             "ZMK v0.3 source is not pinned")
     require("revision: 00b389b9093f89f7cec3e025126383877008acd1" in west,
             "PMW3610 acceleration driver is not pinned")
-    require("revision: 8756cb7b8114069fa3c25c6f6c990f24988fceff" in west,
-            "RGB LED widget is not pinned")
+    require("zmk-rgbled-widget" not in west,
+            "original roBa dependency set must not include the RGB LED widget")
     require("python3 scripts/verify-built-firmware.py" in workflow,
             "generated firmware contract is not enforced in CI")
 
