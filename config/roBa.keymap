@@ -23,6 +23,7 @@
 
 /* Keep Keymap Editor's standard two-parameter encoder UI while filtering
  * both directions through the shared two-input volume divider. */
+
 &inc_dec_kp {
     bindings = <&encoder_key_divider_cw>, <&encoder_key_divider_ccw>;
 };
@@ -168,7 +169,7 @@
             bindings = <
 &kp EXCLAMATION  &kp AT_SIGN     &kp HASH        &kp DOLLAR     &kp PERCENT                        &kp CARET  &kp AMPERSAND  &kp ASTERISK   &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS
 &kp LG(LS(N3))   &kp LG(LS(N4))  &kp LG(LS(N5))  &kp LA(A)      &kp LG(LA(S))  &none       &trans  &kp MINUS  &kp EQUAL      &kp SLASH      &kp LEFT_BRACKET      &kp RIGHT_BRACKET
-&trans           &trans          &kp LG(LA(C))   &kp LG(LA(V))  &trans         &trans      &trans  &trans     &trans         &kp SEMICOLON  &kp SQT               &kp GRAVE
+&trans           &trans          &kp LG(LA(C))   &kp LG(LA(V))  &trans         &trans      &trans  &trans     &kp TILDE      &kp SEMICOLON  &kp SQT               &kp GRAVE
 &trans           &trans          &trans          &trans         &trans         &mo 8       &trans  &trans                                                         &trans
             >;
 
@@ -181,7 +182,7 @@
 &kp F1   &kp F2   &kp F3  &kp F4  &kp F5                          &kp PERIOD    &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp PLUS
 &kp F6   &kp F7   &kp F8  &kp F9  &kp F10  &none       &kp LA(Y)  &kp COMMA     &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp MINUS
 &kp F11  &kp F12  &trans  &trans  &trans   &trans      &kp EQUAL  &kp NUMBER_0  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp ASTERISK
-&trans   &trans   &trans  &trans  &trans   &trans      &trans     &trans                                                  &kp SLASH
+&trans   &trans   &trans  &trans  &trans   &trans      &trans     &kp COLON                                               &kp SLASH
             >;
 
             sensor-bindings = <&scroll_up_down>;
