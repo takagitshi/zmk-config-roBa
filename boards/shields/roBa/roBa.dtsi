@@ -1,5 +1,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <input/processors.dtsi>
+#include "aml-exclusions.h"
 #include <physical_layouts.dtsi>
 
 / {

@@ -5,6 +5,9 @@ from pathlib import Path
 import re
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from aml_keymap import mouse_positions
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -109,12 +112,16 @@ def main() -> int:
         position for position, behavior in enumerate(mouse_behaviors)
         if behavior not in {"trans", "none"}
     ]
-    excluded_match = re.search(r"excluded-positions\s*=\s*<(?P<body>[^>]*)>;", keymap)
-    require(excluded_match is not None, "AML excluded-positions is missing")
-    excluded_positions = [int(value) for value in excluded_match.group("body").split()]
-    require(excluded_positions == configured_mouse_positions,
-            f"AML exclusions {excluded_positions} do not match Mouse positions "
-            f"{configured_mouse_positions}")
+    require("excluded-positions = <AML_EXCLUDED_POSITIONS>;" in keymap,
+            "AML exclusions must be generated from the editable Mouse layer")
+    require('#include "aml-exclusions.h"' in dtsi,
+            "generated AML header is not included by the shield")
+    require(configured_mouse_positions == mouse_positions(keymap, 1, 43),
+            "AML generator disagrees with Mouse positions")
+    hook = read("modules/modules.cmake")
+    for fragment in ("generate-aml-exclusions.py", "--mouse-layer 1 --key-count 43",
+                     "CMAKE_CONFIGURE_DEPENDS", "KEYMAP_FILE", "DTS_EXTRA_CPPFLAGS"):
+        require(fragment in hook, f"AML generation hook missing: {fragment}")
 
     layer_access_pattern = re.compile(r"&(?:lt|mo|mouse_lt)\s+(\d+)\b")
     layer_references = {

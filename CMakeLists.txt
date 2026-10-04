@@ -1,4 +1,7 @@
 if(CONFIG_SHIELD_ROBA_L OR CONFIG_SHIELD_ROBA_R)
+  if(NOT KEYMAP_FILE STREQUAL roba_aml_keymap)
+    message(FATAL_ERROR "roBa AML and ZMK selected different keymaps")
+  endif()
   zephyr_library()
   zephyr_include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
   zephyr_library_sources_ifdef(CONFIG_ZMK_BEHAVIOR_ENCODER_KEY_DIVIDER

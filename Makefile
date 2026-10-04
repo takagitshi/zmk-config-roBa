@@ -7,6 +7,7 @@ test: tests/gesture_state_test tests/encoder_divider_state_test
 	./tests/gesture_state_test
 	./tests/encoder_divider_state_test
 	python3 tests/keymap_editor_contract_test.py
+	python3 tests/aml_generation_test.py
 
 tests/gesture_state_test: tests/gesture_state_test.c src/gesture_state.c include/roba/gesture_state.h
 	$(CC) $(CFLAGS) -Iinclude tests/gesture_state_test.c src/gesture_state.c -o $@

@@ -5,6 +5,11 @@ from pathlib import Path
 import re
 import sys
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from aml_keymap import mouse_positions
+
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def require(condition: bool, message: str) -> None:
     if not condition:
@@ -33,6 +38,14 @@ def main() -> int:
         return 2
 
     right_dts, right_config, left_dts, left_config = map(read, sys.argv[1:])
+    keymap = (ROOT / "config/roBa.keymap").read_text(encoding="utf-8")
+    expected = mouse_positions(keymap, 1, 43) or [65535]
+    for name, dts in (("right-central", right_dts), ("left-peripheral", left_dts)):
+        aml = node_body(dts, "zip_temp_layer")
+        match = re.search(r"excluded-positions\s*=\s*<([^>]*)>;", aml)
+        require(match is not None, f"{name} generated AML exclusions are missing")
+        actual = [int(value, 0) for value in match.group(1).split()]
+        require(actual == expected, f"{name} AML exclusions {actual} != Mouse positions {expected}")
     sensor = node_body(right_dts, "trackball")
     listener = node_body(right_dts, "trackball_listener")
     normalized_listener = re.sub(r"\s+", "", listener)

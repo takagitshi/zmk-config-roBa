@@ -30,7 +30,7 @@
 
 &zip_temp_layer {
     require-prior-idle-ms = <300>;
-    excluded-positions = <18 19 20 21 22 35 36>;
+    excluded-positions = <AML_EXCLUDED_POSITIONS>;
 };
 
 &mkp_input_listener { input-processors = <&zip_temp_layer 1 10000>; };

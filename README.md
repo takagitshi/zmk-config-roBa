@@ -42,8 +42,11 @@ keymap and upper-level pointing features.
 the ten-layer structure, 43 input slots, safe momentary layer access and AML
 exclusions. Layer display names, encoder directions, Gesture actions, tap
 actions and mouse-button values remain editable. Mouse-layer key positions
-also control AML's `excluded-positions`; CI checks that they stay in sync so
-AML does not turn off before a Mouse-layer action runs.
+automatically generate AML's `excluded-positions` during each build, including
+incremental builds. Active bindings are excluded; `&trans` and `&none` are not.
+No manual exclusion list update is required after Keymap Editor saves. An empty
+Mouse layer uses an impossible position so normal keys still cancel AML. CI
+checks the generated Devicetree against the current Mouse layer.
 
 ## Firmware artifacts
 
