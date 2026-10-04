@@ -44,7 +44,7 @@
         };
 
         log_off {
-            bindings = <&kt LG(LC(Q))>;
+            bindings = <&kp LG(LC(Q))>;
             key-positions = <33 32>;
         };
     };
